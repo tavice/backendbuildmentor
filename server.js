@@ -49,7 +49,7 @@ app.use(express.urlencoded({extended:false}))
 app.use(methodOverride('_method'))
 
 //Cors
-const whitelist = ['http://localhost:8000','http://localhost:3001',  'https://build-mentr.herokuapp.com']
+const whitelist = ['http://localhost:8000','http://localhost:3001',  'https://buildmentrcademy-9a67ce3164f0.herokuapp.com/']
 const corsOptions = {
     origin: function (origin, callback) {
         if (whitelist.indexOf(origin) !== -1 || !origin){
