@@ -16,41 +16,52 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage: storage });
 
-//Index
+// Index
 router.get("/", (req, res) => {
-  Testimony.find({}, (error, allTestimonies) => {
-    res.json(allTestimonies);
-  });
+  Testimony.find({})
+    .then(allTestimonies => {
+      res.json(allTestimonies);
+    })
+    .catch(error => {
+      res.status(500).json({ error: error.message });
+    });
 });
 
-//Create
+// Create
 router.post("/", upload.single("image"), (req, res) => {
   req.body.image = req.file.path;
   req.body.alt = req.file.filename;
-  Testimony.create(req.body, (error, createdTestimony) => {
-    res.json(createdTestimony);
-  });
+  Testimony.create(req.body)
+    .then(createdTestimony => {
+      res.json(createdTestimony);
+    })
+    .catch(error => {
+      res.status(500).json({ error: error.message });
+    });
 });
 
-//Delete
+// Delete
 router.delete("/:id", (req, res) => {
-  Testimony.findByIdAndRemove(req.params.id, (error, deletedTestimony) => {
-    res.json(deletedTestimony);
-  });
+  Testimony.findByIdAndRemove(req.params.id)
+    .then(deletedTestimony => {
+      res.json(deletedTestimony);
+    })
+    .catch(error => {
+      res.status(500).json({ error: error.message });
+    });
 });
 
-//Update
+// Update
 router.put("/:id", upload.single("image"), (req, res) => {
   req.body.image = req.file.path;
   req.body.alt = req.file.filename;
-  Testimony.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true },
-    (error, updatedTestimony) => {
+  Testimony.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    .then(updatedTestimony => {
       res.json(updatedTestimony);
-    }
-  );
+    })
+    .catch(error => {
+      res.status(500).json({ error: error.message });
+    });
 });
 
 module.exports = router;
