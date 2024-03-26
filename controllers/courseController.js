@@ -16,42 +16,55 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage: storage });
 
-//Index
+
+// Index
 router.get("/", (req, res) => {
-  Course.find({}, (error, allCourses) => {
-    res.json(allCourses);
+    Course.find({})
+      .then(allCourses => {
+        res.json(allCourses);
+      })
+      .catch(error => {
+        res.status(500).json({ error: error.message });
+      });
   });
-});
 
-//Create
+// Create
 router.post("/", upload.single("image"), (req, res) => {
-  req.body.image = req.file.path;
-  req.body.alt = req.file.filename;
-  Course.create(req.body, (error, createdCourse) => {
-    res.json(createdCourse);
+    req.body.image = req.file.path;
+    req.body.alt = req.file.filename;
+    Course.create(req.body)
+      .then(createdCourse => {
+        res.json(createdCourse);
+      })
+      .catch(error => {
+        res.status(500).json({ error: error.message });
+      });
   });
-});
-
-//Delete
-router.delete("/:id", (req, res) => {
-  Course.findByIdAndRemove(req.params.id, (error, deletedCourse) => {
-    res.json(deletedCourse);
+  
+  // Delete
+  router.delete("/:id", (req, res) => {
+    Course.findByIdAndRemove(req.params.id)
+      .then(deletedCourse => {
+        res.json(deletedCourse);
+      })
+      .catch(error => {
+        res.status(500).json({ error: error.message });
+      });
   });
-});
-
-//Update
-router.put("/:id", upload.single("image"), (req, res) => {
-  req.body.image = req.file.path;
-  req.body.alt = req.file.filename;
-  Course.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true },
-    (error, updatedCourse) => {
-      res.json(updatedCourse);
-    }
-  );
-});
+  
+  // Update
+  router.put("/:id", upload.single("image"), (req, res) => {
+    req.body.image = req.file.path;
+    req.body.alt = req.file.filename;
+    Course.findByIdAndUpdate(req.params.id, req.body, { new: true })
+      .then(updatedCourse => {
+        res.json(updatedCourse);
+      })
+      .catch(error => {
+        res.status(500).json({ error: error.message });
+      });
+  });
+  
 
 module.exports = router;
 
